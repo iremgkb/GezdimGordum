@@ -1,0 +1,51 @@
+﻿@model List<Paylasim>
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="mx-auto" style="max-width: 600px">
+    <a asp-controller="Paylasimlar" asp-action="Yeni" class="btn btn-primary mb-2">Yeni Paylaşım</a>
+
+    @if (Model.Count == 0)
+    {
+        <div class="text-center">
+            Henüz bir paylaşım yapılmamış.
+        </div>
+    }
+    else
+    {
+        @foreach (Paylasim paylasim in Model)
+        {
+            <div class="paylasim mb-3 border rounded p-3">
+                <div class="paylasim-resim">
+                    <div class="paylasim-resim-eylemler p-2 rounded">
+                        <a href="#" class="btn btn-sm btn-info"><i class="fa-solid fa-edit"></i></a>
+                        <a data-sil="@paylasim.Id" href="#" class="btn btn-sm btn-danger ml-1"><i class="fa-solid fa-trash"></i></a>
+                    </div>
+                    <img src="~/img/@paylasim.ResimYolu" class="w-100" alt="paylaşım" />
+                </div>
+                <div class="mt-2">
+                    @paylasim.Aciklama
+                </div>
+            </div>
+        }
+    }
+</div>
+
+@section Scripts {
+    <script>
+        $("[data-sil]").click(function (event) {
+            var btn = this;
+            event.preventDefault();
+            var id = $(btn).data("sil");
+            $.ajax({
+                type: "post",
+                url: "@Url.Action("Sil", "Paylasimlar")",
+                data: { id: id },
+                success: function (data) {
+                    $(btn).remove();
+                }
+            });
+        });
+    </script>
+}
